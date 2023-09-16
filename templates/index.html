@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Reader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@1,9..40,700&family=Oswald:wght@700&family=Roboto&display=swap" rel="stylesheet"></head>
+<body>
+    <style>
+    .container {
+        display: flex;
+        max-width: 930px;
+        margin: 0 auto;
+        height: 767px;
+        flex-wrap: wrap;
+        color: aliceblue;
+        background-color: #000000;
+        font-family: 'Roboto', sans-serif;
+    }
+    
+    .left-panel {
+        flex: 1;
+        max-width: 300px;
+        padding: 10px;
+        box-sizing: border-box;
+        background-color: rgb(8, 10, 15);
+        color :#ccc
+    }
+    
+    .right-panel {
+        flex: 2;
+        max-width: 620px;
+        padding: 10px;
+        box-sizing: border-box;
+        background-color: rgb(46, 48, 53);
+    }
+    
+    h1 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+        font-family: 'DM Sans', sans-serif;
+
+    }
+    
+    h2 {
+        margin-bottom: 10px;
+    }
+    
+    #ingredients {
+        margin-bottom: 20px;
+        overflow-y: auto;
+    }
+    
+    .ingredient-item {
+        margin-bottom: 5px;
+    }
+    
+    .ingredient-item label {
+        margin-left: 5px;
+    }
+    
+    button {
+        display: block;
+        margin: 10px 0;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #000000;
+        color:aliceblue;
+    }
+    
+    ul {
+        list-style-type: none;
+        padding: 0;
+        overflow-y: auto;
+    }
+    
+    ul li {
+        cursor: pointer;
+        margin: 5px 0;
+        padding: 5px;
+        border: 1px solid #000000;
+        background-color: #000000;
+    }
+    
+    #recipeDetails {
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 400px;
+        overflow-y: auto;
+    }
+    </style>
+    <div class="container">
+        <h1>Trouve une recette</h1>
+        
+        <div class="left-panel">
+            
+            <h2>Ingredients</h2>
+            <div id="ingredients">
+                {% for ingredient in ingredients %}
+                    <div class="ingredient-item">
+                        <input type="checkbox" id="{{ ingredient }}" value="{{ ingredient }}">
+                        <label for="{{ ingredient }}">{{ ingredient }}</label>
+                    </div>
+                {% endfor %}
+                </div>
+            
+            <button onclick="applyFilter()">Apply Filter</button>
+            
+
+        </div>
+        
+        <div class="right-panel">
+            <h2>La Recette</h2>
+            <div id="recipeDetails"></div>
+            <h2>Liste de recettes</h2>
+            <ul id="recipes">
+                {% for recipe in recipes %}
+                    <li onclick="displayRecipe('{{ recipe.recipe_name }}')">{{ recipe.recipe_name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+<!-- 
+Bellow is the Logic
+-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('update_recipes', function(recipes) {
+            let recipeList = document.getElementById('recipes');
+            recipeList.innerHTML = '';
+            for(let recipe of recipes) {
+                let li = document.createElement('li');
+                li.innerHTML = recipe.recipe_name;
+                li.onclick = function() { displayRecipe(recipe.recipe_name); };
+                recipeList.appendChild(li);
+            }
+        });
+
+        function displayRecipe(recipeName) {
+            fetch('/recipe/' + recipeName)
+                .then(response => response.json())
+                .then(data => {
+                    let detailsDiv = document.getElementById('recipeDetails');
+                    detailsDiv.innerHTML = 'Ingredients: ' + data.ingredients.join(', ') + '<br>Steps: ' + data.steps.join('<br>');
+                });
+        }
+
+        function applyFilter() {
+            let selectedIngredients = [];
+            let checkboxes = document.querySelectorAll('#ingredients input[type="checkbox"]:checked');
+            for(let checkbox of checkboxes) {
+                selectedIngredients.push(checkbox.value);
+            }
+
+            let filterType = 0;  // Adjust as per your dropdown or other UI element
+
+            socket.emit('apply_filter', {
+                filter_type: filterType,
+                selected_ingredients: selectedIngredients
+            });
+        }
+    </script>
+</body>
+</html>
