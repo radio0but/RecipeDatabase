@@ -2,6 +2,11 @@
 
 Recipe App is a comprehensive tool designed to help users manage their recipes. The application provides an intuitive interface for creating, reading, and managing recipes. Users can also filter recipes based on specific ingredients, ensuring they always find what they're looking for. For those who prefer a web-based approach, a `webUI.py` is also provided to access and manage the recipes via a browser.
 
+![Screenshot](createRecipe.png)
+![Screenshot](readRecipe.png)
+![Screenshot](settings.png)
+![Screenshot](webUI.png)
+
 ## Table of Contents
 - [Installation](#installation)
   - [Dependencies](#dependencies)
