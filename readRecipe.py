@@ -13,7 +13,7 @@ class ReadRecipe(QWidget):
     def __init__(self):
         super().__init__()
         self.db = Database()
-
+        self.connection_available = self.db.connection_status
         # Load the UI design
         loader = QUiLoader()
         file = QFile("read_recipe.ui")  # Adjust the path to your actual file
@@ -31,10 +31,12 @@ class ReadRecipe(QWidget):
         self.ui.filter_button.clicked.connect(self.apply_filter)
         self.ui.remove_filter_button.clicked.connect(self.remove_filters)
         self.ui.refresh_button.clicked.connect(self.refresh_data)
-
-        # Populate the widgets
-        self.populate_recipe_list()
-        self.populate_ingredient_filters()
+        if self.connection_available:
+            # Populate the widgets only if the connection is available
+            self.populate_recipe_list()
+            self.populate_ingredient_filters()
+        else:
+            self.disable_controls()
 
     def remove_filters(self):
         for checkbox in self.ingredient_filters.values():
@@ -43,11 +45,19 @@ class ReadRecipe(QWidget):
 
     def populate_recipe_list(self):
         self.ui.recipe_list.clear()
+        if not self.connection_available:
+            print("Database connection not available.")
+            return
+        
         recipes = self.db.collection.find({})
         for recipe in recipes:
             self.ui.recipe_list.addItem(recipe['recipe_name'])
 
     def display_recipe(self, item):
+        if not self.connection_available:
+            print("Database connection not available.")
+            return
+
         recipe = self.db.get_recipe(item.text())
         
         # Check if the steps are in HTML format
@@ -58,9 +68,11 @@ class ReadRecipe(QWidget):
                 
         self.ui.recipe_details_browser.setHtml(details)  # Note: recipe_details_browser is our QTextBrowser
 
-
-
     def apply_filter(self):
+        if not self.connection_available:
+            print("Database connection not available.")
+            return
+
         selected_ingredients = [ingredient for ingredient, checkbox in self.ingredient_filters.items() if checkbox.isChecked()]
         filter_type = self.ui.filter_dropdown.currentIndex()
 
@@ -74,6 +86,10 @@ class ReadRecipe(QWidget):
             self.ui.recipe_list.addItem(recipe['recipe_name'])
 
     def populate_ingredient_filters(self):
+        if not self.connection_available:
+            print("Database connection not available.")
+            return
+
         self.ingredient_filters = {}
         
         # Create a QWidget for the QScrollArea
@@ -93,8 +109,15 @@ class ReadRecipe(QWidget):
         
         # Set the QWidget as the widget for the QScrollArea.
         self.ui.scrollArea.setWidget(scroll_area_widget_contents)
+    def disable_controls(self):
+        self.ui.recipe_list.setEnabled(False)
+        self.ui.filter_button.setEnabled(False)
+        self.ui.remove_filter_button.setEnabled(False)
+        self.ui.refresh_button.setEnabled(False)
+
     def refresh_data(self):
-        self.populate_recipe_list()
-        self.populate_ingredient_filters()
+        if self.connection_available:
+            self.populate_recipe_list()
+            self.populate_ingredient_filters()
    
     

@@ -30,6 +30,9 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
         Form.setSizePolicy(sizePolicy)
         Form.setMinimumSize(QSize(0, 767))
+        font = QFont()
+        font.setFamilies([u"Roboto"])
+        Form.setFont(font)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.frame = QFrame(Form)
@@ -51,6 +54,11 @@ class Ui_Form(object):
         self.open_recipe_button.setObjectName(u"open_recipe_button")
 
         self.button_layout.addWidget(self.open_recipe_button)
+
+        self.remove_recipe_button = QPushButton(self.frame)
+        self.remove_recipe_button.setObjectName(u"remove_recipe_button")
+
+        self.button_layout.addWidget(self.remove_recipe_button)
 
         self.recipes_dropdown = QComboBox(self.frame)
         self.recipes_dropdown.setObjectName(u"recipes_dropdown")
@@ -90,7 +98,7 @@ class Ui_Form(object):
         self.ingredient_scroll_area.setWidgetResizable(True)
         self.ingredient_scroll_content = QWidget()
         self.ingredient_scroll_content.setObjectName(u"ingredient_scroll_content")
-        self.ingredient_scroll_content.setGeometry(QRect(0, 0, 284, 215))
+        self.ingredient_scroll_content.setGeometry(QRect(0, 0, 284, 221))
         self.ingredients_layout_2 = QGridLayout(self.ingredient_scroll_content)
         self.ingredients_layout_2.setObjectName(u"ingredients_layout_2")
         self.ingredient_scroll_area.setWidget(self.ingredient_scroll_content)
@@ -147,6 +155,7 @@ class Ui_Form(object):
         self.save_button.setText(QCoreApplication.translate("Form", u"Save Recipe", None))
         self.clear_button.setText(QCoreApplication.translate("Form", u"New Recipe", None))
         self.open_recipe_button.setText(QCoreApplication.translate("Form", u"Modify Recipe", None))
+        self.remove_recipe_button.setText(QCoreApplication.translate("Form", u"Delete Recipe", None))
         self.recipe_name_label.setText(QCoreApplication.translate("Form", u"Recipe Name:", None))
         self.ingredients_label.setText(QCoreApplication.translate("Form", u"Ingredients:", None))
         self.add_ingredient_button.setText(QCoreApplication.translate("Form", u"Add Ingredient ", None))

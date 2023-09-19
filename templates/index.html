@@ -95,7 +95,7 @@
     }
     </style>
     <div class="container">
-        <h1>Trouve une recette</h1>
+        <h1>Recipe Manager</h1>
         
         <div class="left-panel">
             
@@ -115,9 +115,9 @@
         </div>
         
         <div class="right-panel">
-            <h2>La Recette</h2>
+            <h2>The Recipe</h2>
             <div id="recipeDetails"></div>
-            <h2>Liste de recettes</h2>
+            <h2>Recipes List</h2>
             <ul id="recipes">
                 {% for recipe in recipes %}
                     <li onclick="displayRecipe('{{ recipe.recipe_name }}')">{{ recipe.recipe_name }}</li>

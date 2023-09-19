@@ -10,6 +10,11 @@
     <height>767</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Roboto</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Read Recipe</string>
   </property>
@@ -19,10 +24,16 @@
      <property name="text">
       <string>Filter by Ingredients:</string>
      </property>
+     <property name="margin">
+      <number>6</number>
+     </property>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="leftMargin">
+      <number>6</number>
+     </property>
      <item>
       <widget class="QFrame" name="LeftPanel">
        <property name="maximumSize">
@@ -43,7 +54,7 @@
              <x>0</x>
              <y>0</y>
              <width>184</width>
-             <height>595</height>
+             <height>587</height>
             </rect>
            </property>
            <widget class="QWidget" name="verticalLayoutWidget">
